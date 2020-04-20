@@ -1,0 +1,32 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}" media="screen"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <h1>Upload a file</h1>
+      <div class="upload-container">
+        <div class="border-container">
+          <div class="icons fa-4x">
+            <i class="fas fa-file-image" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
+            <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
+            <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
+          </div>
+            <form action = "http://localhost:5000/uploader" method = "POST" 
+          enctype = "multipart/form-data">
+              <input type="file" name="file" id="file-upload">
+              <p>Drag and drop files here, or 
+                <a href="#" id="file-browser">browse</a> your computer.</p>
+            </div>
+            <input type = "submit"/>
+
+            </form> 
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
