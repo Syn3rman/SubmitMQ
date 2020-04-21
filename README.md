@@ -44,6 +44,13 @@ clientPort=2181
 :wq
 ```
 
+3. Start zookeeper server
+
+```
+$ cd ~/Downloads/kafka/apache-zookeeper-3.6.0-bin/bin/
+$ sudo ./zkServer.sh start
+```
+
 #### <u>Starting Kafka</u>
 
 1. Install [Kafka](https://www.apache.org/dyn/closer.cgi?path=/kafka/2.5.0/kafka_2.12-2.5.0.tgz)
