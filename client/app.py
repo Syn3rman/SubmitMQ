@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for
 import json
 import hashlib
 import datetime
-import socket
 import os
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -21,12 +20,31 @@ client = MongoClient(mongo_url)
 
 # Run a job for 10 minutes if timeout not provided
 DEFAULT_TIME_TO_RUN = 600
-
+PAGE_SIZE = 10
 
 @app.route('/')
 def upload_file():
-   return render_template('index.html')
+    db = client.diss
+    results = db.results
+    data = {}
+    data["count"] = results.count()
+    return render_template('dashboard.html', data=data)
 
+@app.route('/upload/<int:page_num>')
+def submit(page_num):
+    db = client.diss
+    results = db.results
+
+    skips = PAGE_SIZE * (page_num - 1)
+    cursor = results.find().skip(skips).limit(PAGE_SIZE)
+
+    res =  [x for x in cursor]
+    print(res)
+    return render_template('upload.html', docs=res)
+
+@app.route('/jobs/<int:id>')
+def job_info(id):
+    print("Lol")
 
 @app.route('/uploader', methods=['POST'])
 def upload():
@@ -46,7 +64,7 @@ def upload():
 
     data["id"] = hashlib.sha1(contents.encode('utf-8')).hexdigest()
     data["status"] = "submitted"
-    data["submittedBy"] = socket.gethostbyname(socket.gethostname())
+    data["submittedBy"] = request.remote_addr
 
     db = client.diss
     results = db.results
