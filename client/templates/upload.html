@@ -1,0 +1,197 @@
+<!-- <head>
+  <link href="static/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}" media="screen"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <h1>Upload a file</h1>
+      <div class="upload-container">
+        <div class="border-container">
+          <div class="icons fa-4x">
+            <i class="fas fa-file-image" data-fa-transform="shrink-3 down-2 left-6 rotate--45"></i>
+            <i class="fas fa-file-alt" data-fa-transform="shrink-2 up-4"></i>
+            <i class="fas fa-file-pdf" data-fa-transform="shrink-3 down-2 right-6 rotate-45"></i>
+          </div>
+            <form action = "http://localhost:5000/uploader" method = "POST" 
+          enctype = "multipart/form-data">
+              <input type="file" name="file" id="file-upload">
+              <p>Drag and drop files here, or 
+                <a href="#" id="file-browser">browse</a> your computer.</p>
+            </div>
+            <input type = "submit"/>
+
+            </form> 
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body> -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Hello, world!</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <!-- Material Kit CSS -->
+  <link href="../static/css/material-dashboard.css?v=2.1.0" rel="stylesheet"/>
+  
+  <script src="../static/js/core/jquery.min.js"></script>
+   <script src="../static/js/core/popper.min.js"></script>
+   <script src="../static/js/core/bootstrap-material-design.min.js"></script>
+   <script src="../https://unpkg.com/default-passive-events"></script>
+   <script src="../static/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+   <!-- Place this tag in your head or just before your close body tag. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!-- Chartist JS -->
+   <script src="../static/js/plugins/chartist.min.js"></script>
+   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+   <script src="../static/js/material-dashboard.js?v=2.1.0"></script>
+   <script src="../static/js/main.js"></script>
+  
+</head>
+
+<body class="dark-edition">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="black" data-image="{{ url_for("static", filename="img/sidebar-2.jpg") }}">
+      <div class="logo">
+        <a href="" class="simple-text logo-normal">
+          DISS
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active  ">
+            <a class="nav-link" href="/">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <!-- your sidebar here -->
+          <li class="nav-item active  ">
+            <a class="nav-link" href="/upload/1">
+              <i class="material-icons">cloud_upload</i>
+              <p>Submit job</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <div class="content">
+        <div class="container-fluid">
+          <!-- Table -->
+          
+          <div class="col-md-12">
+            <div class="card card-plain">
+              <div class="card-header card-header-primary">
+                <h4 class="card-title mt-0"> Task History</h4>
+                <p class="card-category"> Log for all submitted tasks</p>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="">
+                      <th>ID</th><th>Creator</th><th>Language</th><th>Status</th><th>Details</th>
+                    </thead>
+                    <tbody>
+                        {% for job in docs %}
+                        <tr>
+                            <td>{{ job["id"] }}</td>
+                            <td>{{ job["submittedBy"] }}</td>
+                            <td>{{ job["language"] }}</td>
+                            <td>{{ job["status"] }}</td>
+                            <td><a href="/jobs/" + {{ job["id"] }} class="btn btn-primary btn" role="button">View details</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table ends -->
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Submit task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- form -->
+                        <form action = "/uploader" method = "POST" enctype = "multipart/form-data">
+                            <div class="form-group">
+                               <label for="file-upload" class="bmd-label-floating">Select file</label>
+                               <input type="file" name="file" class="form-control" id="file-upload">
+                            </div>
+                            <div class="form-group">
+                                <label for="language">Language</label>
+                                <select class="form-control" name="language" id="language">
+                                  <option>cpp</option>
+                                  <option>python</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeout" class="bmd-label-floating">Timeout (in s)</label>
+                                <input type="text"  class="form-control" name="timeout" id="timeout">
+                             </div>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Modal ends -->
+
+        <!-- Button trigger modal -->
+          <nav class="float-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                New task
+            </button>
+        </nav>
+
+            </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="https://github.com/Syn3rman">
+                  @Syn3rman
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright float-right">
+             Made with <i class="material-icons">favorite</i> by
+            <a href="https://github.com/Syn3rman" target="_blank">Aditya</a>.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>
