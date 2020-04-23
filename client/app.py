@@ -42,9 +42,16 @@ def submit(page_num):
     print(res)
     return render_template('upload.html', docs=res)
 
-@app.route('/jobs/<int:id>')
+@app.route('/jobs/<id>')
 def job_info(id):
-    print("Lol")
+    db = client.diss
+    results = db.results
+    print(id)
+
+    res = results.find_one({"id": id})
+    print(res)
+
+    return render_template('task_info.html', data=res)
 
 @app.route('/uploader', methods=['POST'])
 def upload():

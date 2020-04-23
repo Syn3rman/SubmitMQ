@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Hello, world!</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <!-- Material Kit CSS -->
+  <link href="../static/css/material-dashboard.css?v=2.1.0" rel="stylesheet"/>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst"></script>
+
+  <script src="../static/js/core/jquery.min.js"></script>
+   <script src="../static/js/core/popper.min.js"></script>
+   <script src="../static/js/core/bootstrap-material-design.min.js"></script>
+   <script src="../https://unpkg.com/default-passive-events"></script>
+   <script src="../static/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+   <!-- Place this tag in your head or just before your close body tag. -->
+   <script async defer src="https://buttons.github.io/buttons.js"></script>
+   <!-- Chartist JS -->
+   <script src="../static/js/plugins/chartist.min.js"></script>
+   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+   <script src="../static/js/material-dashboard.js?v=2.1.0"></script>
+   <script src="../static/js/main.js"></script>]
+
+</head>
+
+<body class="dark-edition">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="black" data-image="{{ url_for("static", filename="img/sidebar-2.jpg") }}">
+      <div class="logo">
+        <a href="" class="simple-text logo-normal">
+          DISS
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active  ">
+            <a class="nav-link" href="/">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <!-- your sidebar here -->
+          <li class="nav-item active  ">
+            <a class="nav-link" href="/upload/1">
+              <i class="material-icons">cloud_upload</i>
+              <p>Submit job</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <div class="content">
+        <div class="container-fluid">
+          <!-- your content here -->
+          <div class="row">
+          
+            <div class="col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">build</i>
+                      </div>
+                      <p class="card-category">Status</p>
+                      <h3 class="card-title">{{ data["status"] }}</h3>
+                    </div>
+                     <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">keyboard_return</i> Return Code {{ data["returnCode"] }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+            <div class="col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">cloud_upload</i>
+                      </div>
+                      <p class="card-category">Submitted By</p>
+                      <h3 class="card-title">{{ data["submittedBy"] }}</h3>
+                    </div>
+                     <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">place</i> IP address
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                      <div class="card-icon">
+                        <i class="material-icons">done</i>
+                      </div>
+                      <p class="card-category">Completed By</p>
+                      <h3 class="card-title">{{ data["completedBy"] }}</h3>
+                    </div>
+                     <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">place</i> IP address
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row"> -->
+                <div class="col-md-6 col-sm-6">
+                    <div class="card card-nav-tabs">
+                        <h4 class="card-header card-header-success">Std Out</h4>
+                        <div class="card-body">
+                        <h4 class="card-title">Output of the program</h4>
+                        {% if data["output"] %}
+                            <p class="card-text">{{ data["output"] }}</p>
+                        {% else %}
+                            <p class="card-text">Nothing to show here :p</p>
+                        {% endif %}
+                    </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6">
+                    <div class="card card-nav-tabs">
+                        <h4 class="card-header card-header-success">Std Err</h4>
+                        <div class="card-body">
+                        <h4 class="card-title">Errors encountered</h4>
+                        {% if data["err"] %}
+                            <p class="card-text">{{ data["err"] }}</p>
+                        {% else %}
+                            <p class="card-text">Nothing to show here :p</p>
+                        {% endif %}
+                    </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12 col-sm-12">
+                    <div class="card card-nav-tabs">
+                        <h4 class="card-header card-header-danger">Submitted file</h4>
+                        <div class="card-body">
+                        <h4 class="card-title">Code submitted by user</h4>
+                        {% if data["content"] %}
+                            <p class="card-text">
+                                <pre class="prettyprint lang-{{ data['language']}}"> {{ data["content"] }} </pre>
+                            </p>
+                        {% else %}
+                            <p class="card-text">Nothing to show here :p</p>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+
+            
+
+            </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="https://github.com/Syn3rman">
+                  @Syn3rman
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <div class="copyright float-right">
+             Made with <i class="material-icons">favorite</i> by
+            <a href="https://github.com/Syn3rman" target="_blank">Aditya</a>.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</body>
+
+</html>
