@@ -1,4 +1,4 @@
-from kafka import KafkaProducer
+import pika
 from flask import Flask, render_template, request, redirect, url_for
 import json
 import hashlib
@@ -11,16 +11,13 @@ app = Flask(__name__)
 
 load_dotenv()
 
-producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
-                        value_serializer=lambda v: json.dumps(v).encode('utf-8')
-                        )
-
 mongo_url = os.getenv("MONGO_URL")
 client = MongoClient(mongo_url)
 
 # Run a job for 10 minutes if timeout not provided
 DEFAULT_TIME_TO_RUN = 600
 PAGE_SIZE = 10
+
 
 @app.route('/')
 def upload_file():
@@ -77,8 +74,19 @@ def upload():
     results = db.results
     results.insert_one(data)
 
-    producer.send(language, value={key: data[key] for key in ["content", "id", "language", "timeout"]})
 
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host=os.getenv("RABBITMQ_SERVER")))
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='events', exchange_type='direct')
+
+    channel.basic_publish(
+                        exchange='events', routing_key=language, 
+                        body=json.dumps({key: data[key] for key in ["content", "id", "language", "timeout"]}))
+
+    connection.close()
+    
     return redirect(url_for("upload_file"))
 
 

@@ -1,4 +1,4 @@
-from kafka import KafkaConsumer, KafkaProducer
+import pika
 import json
 import os
 import datetime
@@ -12,16 +12,18 @@ load_dotenv()
 mongo_url = os.getenv("MONGO_URL")
 client = MongoClient(mongo_url)
 
-consumer = KafkaConsumer("cpp",
-                        bootstrap_servers=['localhost:9092'],
-                        auto_offset_reset='earliest',
-                        enable_auto_commit=True,
-                        group_id='cpp',
-                        value_deserializer=lambda x: json.loads(x.decode('utf-8')))
 
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(host=os.getenv("RABBITMQ_SERVER")))
+channel = connection.channel()  
 
-for messages in consumer:
-    message = messages.value
+channel.exchange_declare(exchange='events', exchange_type='direct')
+
+channel.queue_declare(queue='cpp_events')
+channel.queue_bind(exchange='events', queue="cpp_events", routing_key="cpp")
+
+def callback(ch, method, properties, message):
+    message = json.loads(message.decode('utf-8'))
     
     id = message["id"]
     timeout = [ str(message["timeout"]) ]
@@ -34,7 +36,9 @@ for messages in consumer:
     res = Popen(command, stdout=PIPE, stderr=PIPE)
     out,err = res.communicate()
     gpp_retcode = res.returncode
-
+    
+    retcode = gpp_retcode
+    
     if gpp_retcode != 0:
         # job failed if compilation gives error
         status = "failed"
@@ -61,3 +65,9 @@ for messages in consumer:
                                                      "completedAt": ts,
                                                      "completedBy": socket.gethostbyname(socket.gethostname())}
                                                      })
+channel.basic_consume(
+    queue="cpp_events", on_message_callback=callback, auto_ack=True)
+
+channel.start_consuming()
+
+
