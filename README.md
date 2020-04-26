@@ -112,3 +112,15 @@ RABBITMQ_SERVER: host running the rabbitMQ broker
 
 MONGO_URL: Where the data is to be stored.
 ```
+
+
+
+#### ...but why would I use this?
+
+This isn't a completed project. It's far from done. But the possibilities in which this project could progress are endless - this just serves as a base to build upon a specific application.
+
+The two options that I had in mind while building the project were:
+
+- Use it as a submission system for programming contests (something like codechef has). You can collect details as required by the application and use those to create charts to display on the dashboard. (Just make sure to ensure only executing safe code).
+
+- Training ml/dl models with different hyperparameters in parallel across various devices if you have access to multiple idle machines (like access to a computer lab). It would make it convenient and fast. Further features that could be added in this include notifications when a task is done, comparision among the various results etc..
