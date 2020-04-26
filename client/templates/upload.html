@@ -78,7 +78,7 @@
                             <td>{{ job["submittedBy"] }}</td>
                             <td>{{ job["language"] }}</td>
                             <td>{{ job["status"] }}</td>
-                            <td><a href="{{ url_for("job_info", id=job.id) }}" class="btn btn-primary btn" role="button">View details</a></td>
+                            <td><a href="{{ url_for("tasks_info", id=job.id) }}" class="btn btn-primary btn" role="button">View details</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
