@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+    python:
+        build: ./python
+        network_mode: host
+        ports:
+            - 5000
+        volumes:
+            - ./python:/worker_py
+        environment:
+            FLASK_ENV: "development"
+        restart: on-failure
+    
+    cpp:
+        build: ./cpp
+        network_mode: host
+        ports:
+            - 7000
+        volumes:
+            - ./cpp:/worker_cpp
+        environment:
+            FLASK_ENV: "development"
+        restart: on-failure
+        

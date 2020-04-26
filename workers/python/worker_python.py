@@ -1,9 +1,8 @@
 import pika
 import json
 import os
-import datetime
-import socket   
-from subprocess import Popen, PIPE
+import datetime 
+from subprocess import Popen, PIPE, check_output
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
@@ -12,17 +11,23 @@ load_dotenv()
 mongo_url = os.getenv("MONGO_URL")
 client = MongoClient(mongo_url)
 
+print(os.getenv("RABBITMQ_SERVER"))
 
 connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=os.getenv("RABBITMQ_SERVER")))
+    pika.ConnectionParameters(os.getenv("RABBITMQ_SERVER"), 5672, "/", socket_timeout=2))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='events', exchange_type='direct')
 
-channel.queue_declare(queue='python_events')
+channel.queue_declare(queue='python_events', durable=True)
 channel.queue_bind(exchange='events', queue="python_events", routing_key="python")
 
 def callback(ch, method, properties, message):
+    """Processes messages recieved from task queue
+    
+    This is the callback function called when a 
+    new message arrives in the task queue
+    """
     message = json.loads(message.decode('utf-8'))
     
     id = message["id"]
@@ -39,7 +44,13 @@ def callback(ch, method, properties, message):
 
     status = "completed" if retcode == 0 else "failed"
     ts = datetime.datetime.now().timestamp()
-    
+
+    try:
+        cmd = "netstat -nr | grep '^0\.0\.0\.0' | awk '{print $2}'"
+        completedBy = check_output(cmd, shell=True)
+    except:
+        completedBy = "Unable to resolve IP"
+
     db = client.diss
     results = db.results
     
@@ -48,7 +59,7 @@ def callback(ch, method, properties, message):
                                                      "output": out.decode('utf-8'),
                                                      "err": err.decode('utf-8'), 
                                                      "completedAt": ts,
-                                                     "completedBy": socket.gethostbyname(socket.gethostname())}
+                                                     "completedBy": completedBy}
                                                      })
 
 
